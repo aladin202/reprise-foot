@@ -10,7 +10,7 @@ const TODAY=iso(new Date());let tab='today',selected=TODAY,weekOffset=0,dialog=n
 const defaultState=()=>({version:4,created:TODAY,weight:[{date:'2026-10-11',kg:109}],match:{},sessions:{},reports:{},settings:{goal:null,matchDay:4},history:[]});
 let s;try{s=JSON.parse(localStorage.getItem(KEY))||defaultState();if(!s.weight||!s.sessions||!s.match||!s.reports)s=defaultState()}catch(e){s=defaultState()}
 if(!s.progression)s.progression={anchor:monday(TODAY)};if(!s.progression.anchor)s.progression.anchor=monday(TODAY); // Older logs without effort assessment remain unassessed; never infer readiness.
-function save(){try{localStorage.setItem(KEY,JSON.stringify(s))}catch(e){alert('Sauvegarde impossible : stockage du navigateur indisponible. Exporte tes données.') }}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(s));window.dispatchEvent(new Event('rf-data-change'))}catch(e){alert('Sauvegarde impossible : stockage du navigateur indisponible. Exporte tes données.') }}
 function iso(d){return [d.getFullYear(),String(d.getMonth()+1).padStart(2,'0'),String(d.getDate()).padStart(2,'0')].join('-')}
 function date(x){let a=x.split('-').map(Number);return new Date(a[0],a[1]-1,a[2],12)}
 function add(x,n){let d=date(x);d.setDate(d.getDate()+n);return iso(d)}
@@ -133,4 +133,4 @@ if(e.target.id==='reportForm'){let f=new FormData(e.target),x=dialog.date;s.repo
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&dialog){dialog=null;renderModal()}});
 render();
 })();
-</script><script>if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(console.warn));}</script></body></html>
+</script><script>if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(console.warn));}</script><script src="./sync.js" defer></script></body></html>
